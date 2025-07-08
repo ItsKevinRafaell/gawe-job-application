@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontController;
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/wallet/withdraw', [DashboardController::class, 'withdraw_wallet'])->name('dashboard.wallet.withdraw');
         Route::post('/dashboard/wallet/withdraw/store', [DashboardController::class, 'withdraw_wallet_store'])->name('dashboard.wallet.withdraw.store');
     });
-    
+
     Route::middleware('can:topup wallet')->group(function () {
         Route::get('/dashboard/wallet/topup', [DashboardController::class, 'topup_wallet'])->name('dashboard.wallet.topup');
         Route::post('/dashboard/wallet/topup/store', [DashboardController::class, 'topup_wallet_store'])->name('dashboard.wallet.topup.store');
@@ -40,7 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/apply/{project:slug}/submit', [FrontController::class, 'apply_job_store'])->name('front.apply_job.store');
         Route::get('/dashboard/proposals', [DashboardController::class, 'proposals'])->name('dashboard.proposals');
         Route::get('/dashboard/proposals_details/{project}/{projectApplicant}', [DashboardController::class, 'proposal_details'])->name('dashboard.proposal_details');
-    });    
+    });
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:manage wallets')->group(function() {
@@ -66,8 +67,11 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::middleware('can:manage tools')->group(function (){
-            Route::resource('tools', ToolController::class); 
+            Route::resource('tools', ToolController::class);
         });
+
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users/{user}/verify', [UserController::class, 'verifyBusiness'])->name('users.verify');
     });
 });
 

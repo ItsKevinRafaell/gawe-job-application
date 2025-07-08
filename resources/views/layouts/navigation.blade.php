@@ -36,6 +36,10 @@
                         <x-nav-link :href="route('admin.tools.index')" :active="request()->routeIs('admin.tools.index')">
                         {{ __('Tools') }}
                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                        {{ __('Manajemen Klien') }}
+                        </x-nav-link>
                     @endrole
 
                     @role('super_admin|project_client')

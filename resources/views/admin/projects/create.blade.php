@@ -28,7 +28,7 @@
                     Topup Wallet
                 </a>
             </div>
-            
+
         </div>
     </div>
 
@@ -38,69 +38,99 @@
 
                 @if($errors->any())
                     @foreach($errors->all() as $error)
-                        <div class="py-3 w-full rounded-3xl bg-red-500 text-white">
+                        <div class="py-3 w-full rounded-3xl bg-red-500 text-white mb-4 text-center">
                             {{$error}}
                         </div>
                     @endforeach
                 @endif
-                
+
                 <form method="POST" action="{{route('admin.projects.store')}}" enctype="multipart/form-data">
                     @csrf
 
+                    {{-- Name --}}
                     <div>
-                        <x-input-label for="name" :value="__('Name')" />
+                        <x-input-label for="name" :value="__('Nama Lowongan')" />
                         <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
+                    {{-- Thumbnail --}}
                     <div class="mt-4">
-                        <x-input-label for="thumbnail" :value="__('thumbnail')" />
+                        <x-input-label for="thumbnail" :value="__('Gambar Thumbnail')" />
                         <x-text-input id="thumbnail" class="block mt-1 w-full" type="file" name="thumbnail" required autofocus autocomplete="thumbnail" />
                         <x-input-error :messages="$errors->get('thumbnail')" class="mt-2" />
                     </div>
 
+                    {{-- Category --}}
                     <div class="mt-4">
-                        <x-input-label for="budget" :value="__('budget')" />
-                        <x-text-input id="budget" class="block mt-1 w-full" type="number" name="budget" :value="old('budget')" required autofocus autocomplete="budget" />
-                        <x-input-error :messages="$errors->get('budget')" class="mt-2" />
-                    </div>
-
-                    <div class="mt-4">
-                        <x-input-label for="category" :value="__('category')" />
-                        
+                        <x-input-label for="category" :value="__('Kategori Pekerjaan')" />
                         <select name="category_id" id="category_id" class="py-3 rounded-lg pl-3 w-full border border-slate-300">
-                            <option value="">Choose category</option>
+                            <option value="">Pilih kategori</option>
                             @foreach ($categories as $category)
                                 <option value="{{$category->id}}">{{$category->name}}</option>
                             @endforeach
                         </select>
-
-                        <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                     </div>
 
+                    {{-- =============================================== --}}
+                    {{--         ⬇️⬇️ TAMBAHKAN KODE BARU DI SINI ⬇️⬇️         --}}
+                    {{-- =============================================== --}}
+
+                    {{-- Jenis Pekerjaan (Job Type) --}}
                     <div class="mt-4">
-                        <x-input-label for="about" :value="__('about')" />
-                        <textarea name="about" id="about" cols="30" rows="5" class="border border-slate-300 rounded-xl w-full"></textarea>
+                        <x-input-label for="job_type" :value="__('Jenis Pekerjaan')" />
+                        <select name="job_type" id="job_type" class="py-3 rounded-lg pl-3 w-full border border-slate-300">
+                            <option value="">Pilih jenis pekerjaan</option>
+                            <option value="Purnawaktu">Purnawaktu (Full-time)</option>
+                            <option value="Paruh Waktu">Paruh Waktu (Part-time)</option>
+                            <option value="Magang">Magang (Internship)</option>
+                            <option value="Proyek Lepas">Proyek Lepas (Freelance)</option>
+                            <option value="Pekerja Harian">Pekerja Harian</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('job_type')" class="mt-2" />
+                    </div>
+
+                    {{-- Lokasi Kecamatan --}}
+                    <div class="mt-4">
+                        <x-input-label for="location_district" :value="__('Lokasi Kecamatan di Balikpapan')" />
+                        <x-text-input id="location_district" class="block mt-1 w-full" type="text" name="location_district" :value="old('location_district')" required placeholder="Contoh: Balikpapan Selatan" />
+                        <x-input-error :messages="$errors->get('location_district')" class="mt-2" />
+                    </div>
+
+                    {{-- =============================================== --}}
+                    {{--         ⬆️⬆️ BATAS AKHIR KODE BARU ⬆️⬆️             --}}
+                    {{-- =============================================== --}}
+
+                    {{-- Budget --}}
+                    <div class="mt-4">
+                        <x-input-label for="budget" :value="__('Anggaran (Budget)')" />
+                        <x-text-input id="budget" class="block mt-1 w-full" type="number" name="budget" :value="old('budget')" required autofocus autocomplete="budget" />
+                        <x-input-error :messages="$errors->get('budget')" class="mt-2" />
+                    </div>
+
+                    {{-- Skill Level --}}
+                    <div class="mt-4">
+                        <x-input-label for="skill_level" :value="__('Tingkat Keahlian Dibutuhkan')" />
+                        <select name="skill_level" id="skill_level" class="py-3 rounded-lg pl-3 w-full border border-slate-300">
+                            <option value="">Pilih tingkat keahlian</option>
+                            <option value="Beginner">Pemula (Beginner)</option>
+                            <option value="Intermediate">Menengah (Intermediate)</option>
+                            <option value="Expert">Ahli (Expert)</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('skill_level')" class="mt-2" />
+                    </div>
+
+                    {{-- About --}}
+                    <div class="mt-4">
+                        <x-input-label for="about" :value="__('Deskripsi Lowongan')" />
+                        <textarea name="about" id="about" cols="30" rows="5" class="border border-slate-300 rounded-xl w-full" required>{{old('about')}}</textarea>
                         <x-input-error :messages="$errors->get('about')" class="mt-2" />
                     </div>
 
-                    <div class="mt-4">
-                        <x-input-label for="skill_level" :value="__('skill_level')" />
-                        
-                        <select name="skill_level" id="skill_level" class="py-3 rounded-lg pl-3 w-full border border-slate-300">
-                            <option value="">Choose skill_level</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Expert">Expert</option>
-                        </select>
-
-                        <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                    </div>
-
                     <div class="flex items-center justify-end mt-4">
-            
                         <button type="submit" class="font-bold py-4 px-6 bg-indigo-700 text-white rounded-full">
-                            Add New Project
+                            Publikasikan Lowongan
                         </button>
                     </div>
                 </form>

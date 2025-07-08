@@ -51,43 +51,52 @@ class ProjectController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreProjectRequest $request)
-    {
-        $user = Auth::user();
-        $balance = $user->wallet->balance;
+{
+    $user = Auth::user();
+    $balance = $user->wallet->balance;
 
-        if($request->input('budget') > $balance){
-            return redirect()->back()->withErrors('error', 'Balance Anda tidak cukup');
+    if($request->input('budget') > $balance){
+        return redirect()->back()->withErrors(['error' => 'Balance Anda tidak cukup']);
+    }
+
+    DB::transaction(function () use($request, $user){
+        $validated = $request->validated();
+
+        if($request->hasFile('thumbnail')){
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+            $validated['thumbnail'] = $thumbnailPath;
         }
 
+        // Kumpulkan semua data untuk membuat proyek
+        $projectData = $validated;
+        $projectData['slug'] = Str::slug($validated['name']);
+        $projectData['has_finished'] = false;
+        $projectData['has_started'] = false;
+        $projectData['client_id'] = $user->id;
 
+        // Ambil data dari input baru kita yang belum ada di StoreProjectRequest
+        // Nanti bisa ditambahkan ke rules jika diperlukan
+        $projectData['job_type'] = $request->input('job_type');
+        $projectData['location_district'] = $request->input('location_district');
 
-        DB::transaction(function () use($request, $user){
-            $user->wallet->decrement('balance', $request->input('budget'));
+        // Buat Proyek Baru
+        $newProject = Project::create($projectData);
 
-            $projectWalletTransaction = WalletTransaction::create([
-                'type' => 'Project Cost',
-                'amount' => $request->input('budget'),
-                'is_paid' => true,
-                'user_id' => $user->id,
-            ]);
+        // Kurangi saldo wallet setelah proyek berhasil dibuat
+        $user->wallet->decrement('balance', $request->input('budget'));
 
-            $validated = $request->validated();
+        // Catat transaksi
+        WalletTransaction::create([
+            'type' => 'Project Cost',
+            'amount' => $request->input('budget'),
+            'is_paid' => true,
+            'user_id' => $user->id,
+        ]);
 
-            if($request->hasFile('thumbnail')){
-                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-                $validated['thumbnail'] = $thumbnailPath;
+    });
 
-                $validated['slug'] = Str::slug($validated['name']);
-                $validated['has_finished'] = false;
-                $validated['has_started'] = false;
-                $validated['client_id'] = $user->id;
-
-                $newProject = Project::create($validated);
-            }
-
-            return redirect()->route('admin.projects.index');
-        });
-    }
+    return redirect()->route('admin.projects.index')->with('success', 'Project baru berhasil ditambahkan!');
+}
 
     public function tools(Project $project)
     {

@@ -28,7 +28,7 @@
                     @if ($project->has_finished)
                         <div class="font-bold text-xs leading-[18px] text-white bg-[#2E82FE] p-[2px_10px] rounded-full w-fit absolute top-[10px] left-[10px]">CLOSED</div>
                         @else
-                            @if($project->has_started) 
+                            @if($project->has_started)
                             <div class="font-bold text-xs leading-[18px] text-white bg-[#2E82FE] p-[2px_10px] rounded-full w-fit absolute top-[10px] left-[10px]">IN PROGRESS</div>
                             @else
                             <div class="font-bold text-xs leading-[18px] text-white bg-[#2E82FE] p-[2px_10px] rounded-full w-fit absolute top-[10px] left-[10px]">HIRING</div>
@@ -103,31 +103,20 @@
                     <img src="{{Storage::url($project->owner->avatar)}}" class="w-full h-full object-cover" alt="photo">
                 </div>
                 <div class="flex flex-col gap-[2px]">
-                    <p class="font-semibold">{{$project->owner->name}}</p>
+                    <div class="flex items-center gap-2"> {{-- <= Tambahkan div ini --}}
+                        <p class="font-semibold">{{$project->owner->name}}</p>
+
+                        {{-- ⬇️ TAMBAHKAN KODE BADGE DI SINI ⬇️ --}}
+                        @if($project->owner->is_verified_local_business)
+                        <div title="Bisnis Lokal Terverifikasi" class="flex items-center">
+                            <img src="{{asset('assets/icons/verify.svg')}}" class="w-4 h-4" alt="verified">
+                        </div>
+                        @endif
+                        {{-- ⬆️ BATAS AKHIR KODE BADGE ⬆️ --}}
+                    </div> {{-- <= Tutup div --}}
                     <p class="text-sm leading-[21px] text-[#545768]">{{$project->owner->projects->count()}} Total Projects</p>
                 </div>
             </div>
-            <div class="flex items-center gap-[6px]">
-                <div class="flex items-center">
-                    <div>
-                        <img src="{{asset('assets/icons/Star.svg')}}" alt="star">
-                    </div>
-                    <div>
-                        <img src="{{asset('assets/icons/Star.svg')}}" alt="star">
-                    </div>
-                    <div>
-                        <img src="{{asset('assets/icons/Star.svg')}}" alt="star">
-                    </div>
-                    <div>
-                        <img src="{{asset('assets/icons/Star.svg')}}" alt="star">
-                    </div>
-                    <div>
-                        <img src="{{asset('assets/icons/Star-grey.svg')}}" alt="star">
-                    </div>
-                    <p class="font-semibold text-sm">(24,499)</p>
-                </div>
-            </div>
-        </div>
         <hr>
         <a href="" class="font-semibold border border-[#030303] p-[14px_20px] rounded-full text-center">Report this Job</a>
     </div>

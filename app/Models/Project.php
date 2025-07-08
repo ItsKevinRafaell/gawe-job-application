@@ -19,6 +19,8 @@ class Project extends Model
         'client_id',
         'budget',
         'skill_level',
+        'job_type', // <-- TAMBAHKAN INI
+        'location_district', // <-- TAMBAHKAN INI
         'has_finished',
         'has_started',
     ];
