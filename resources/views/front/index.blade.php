@@ -1,28 +1,67 @@
 @extends('front.layouts.app')
 @section('content')
-    <body class="font-poppins text-[#030303] bg-[#F6F5FA] pb-[100px] px-4 sm:px-0">
+    <div class="font-poppins text-[#030303] bg-[#F6F5FA] pb-[100px] px-4 sm:px-0">
     <x-nav/>
-    <section id="header" class="container max-w-[1130px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 mt-[50px]">
-        <h1 class="font-extrabold text-[40px] leading-[45px] text-center sm:text-left">Browse Your <br>Favorites Projects</h1>
-        <div class="flex flex-col sm:flex-row justify-end items-center gap-3 w-full sm:w-auto">
-            <div class="p-2 pl-5 rounded-full bg-white flex items-center justify-between gap-2 w-full sm:w-[500px] focus-within:ring-2 focus-within:ring-[#6635F1] transition-all duration-300">
-                <input type="text" class="appearance-none outline-none focus:outline-none font-semibold placeholder:font-normal placeholder:text-[#545768] w-full" placeholder="Do quick search job by name...">
-                <button class="w-9 h-9 flex shrink-0">
-                    <img src="{{asset('assets/icons/search.svg')}}" alt="icon">
-                </button>
-            </div>
-            <div class="h-[52px] w-0 border border-[#DCDAE3] hidden sm:block"></div>
-            <button class="p-[14px_20px] bg-white rounded-full font-semibold">Job Filters</button>
+   <section id="header" class="container max-w-[1130px] mx-auto mt-[50px]">
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <h1 class="font-extrabold text-[40px] leading-[45px] text-center sm:text-left">
+            Temukan Peluang<br>
+            Kerja di Balikpapan
+        </h1>
+
+       <form action="{{ route('front.index') }}" method="GET" class="p-6 bg-white shadow rounded-lg">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">Filter Lowongan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lowongan</label>
+                        <input type="text" name="name" id="name" placeholder="Contoh: Jasa Desain Grafis" value="{{ request()->get('name') }}" class="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                    </div>
+                    <div>
+                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                        <select name="category_id" id="category_id" class="w-full py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                            <option value="">Semua Kategori</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ request()->get('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="job_type" class="block text-sm font-medium text-gray-700 mb-1">Jenis Pekerjaan</label>
+                        <select name="job_type" id="job_type" class="w-full py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                            <option value="">Semua Jenis</option>
+                            @foreach($job_types as $job_type)
+                                <option value="{{ $job_type }}" {{ request()->get('job_type') == $job_type ? 'selected' : '' }}>{{ $job_type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="location_district" class="block text-sm font-medium text-gray-700 mb-1">Lokasi Kecamatan</label>
+                        <input type="text" name="location_district" id="location_district" placeholder="Contoh: Balikpapan Utara" value="{{ request()->get('location_district') }}" class="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                    </div>
+                    <div class="md:col-span-2 flex gap-3 items-end">
+                        <button type="submit" class="w-full font-bold bg-[#6635F1] text-white py-2 px-4 rounded-lg hover:bg-[#4314e8] transition-all duration-300">
+                            Cari
+                        </button>
+                        <a href="{{ route('front.index') }}" class="w-full text-center font-bold bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
     </section>
+
     <section id="categories" class="container max-w-[1130px] mx-auto flex flex-col gap-4 mt-[50px]">
         <h2 class="font-bold text-xl">Browse Categories</h2>
         <div class="grid grid-cols-1 sm:grid-cols-5 gap-5">
             @forelse ($categories as $category)
             <a href="{{route('front.category', $category->slug)}}" class="card">
                 <div class="p-5 rounded-[20px] bg-white flex flex-col gap-[30px] hover:ring-2 hover:ring-[#6635F1] transition-all duration-300">
-                    <div class="w-[70px] h-[70px] flex shrink-0">
-                        <img src="{{Storage::url($category->icon)}}" alt="icon">
+                    <div class="w-full sm:w-[150px] h-[100px] flex shrink-0 rounded-[20px] overflow-hidden bg-[#D9D9D9]">
+                        <img src="{{Storage::url($category->icon)}}" class="w-full h-full object-cover ro" alt="thumbnail">
+
                     </div>
                     <div class="flex flex-col gap-[6px]">
                         <p href="" class="font-semibold text-lg">{{$category->name}}</p>
@@ -166,6 +205,7 @@
                     </div>
                 </div>
             </div>
+           @if(Auth::user()->is_freelancer)
             <div class="flex flex-col gap-[10px] rounded-[20px] p-[10px_14px] bg-[#030303]">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 flex shrink-0">
@@ -175,8 +215,7 @@
                 </div>
                 <a href="" class="font-semibold text-white text-sm hover:underline text-center">Top Up Connect</a>
             </div>
-            @endauth
-            <hr>
+
             <div class="flex flex-col gap-3">
                 <h3 class="font-semibold">Resources</h3>
                 <div class="flex flex-col gap-[18px]">
@@ -237,7 +276,10 @@
                     </a>
                 </div>
             </div>
+            @endif
+            @endauth
+            <hr>
         </div>
     </section>
-    </body>
+    </div>
 @endsection

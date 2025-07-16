@@ -45,23 +45,23 @@
                                             {{ $user->email }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if($user->is_verified_local_business)
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Terverifikasi
-                                                </span>
-                                            @else
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                    Belum Diverifikasi
-                                                </span>
-                                            @endif
+                                           @if($user->is_verified_local_business)
+                                            <button disabled class="cursor-not-allowed text-xs font-bold py-2 px-4 rounded-full bg-green-500 text-white">
+                                                Terverifikasi
+                                            </button>
+                                        @else
+                                            <button disabled class="cursor-not-allowed text-xs font-bold py-2 px-4 rounded-full bg-yellow-500 text-white">
+                                                Belum Diverifikasi
+                                            </button>
+                                        @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             @if(!$user->is_verified_local_business)
                                                 <form action="{{ route('admin.users.verify', $user) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin memverifikasi bisnis ini?');">
                                                     @csrf
-                                                    <button type="submit" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200">
-                                                        Verifikasi Sekarang
-                                                    </button>
+                                                  <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-full transition ease-in-out duration-150">
+                                                    Verifikasi Sekarang
+                                                </button>
                                                 </form>
                                             @else
                                                 -

@@ -50,7 +50,11 @@
                     </div>
                     <div class="flex flex-col justify-center gap-[2px]">
                         <p class="text-sm text-[#545768]">Payment</p>
-                        <p class="font-bold">Verified</p>
+                           @if($project->owner->is_verified_local_business)
+                                <p class="font-bold text-green-600">Verified Business</p>
+                            @else
+                                <p class="font-bold text-gray-500">Not Verified</p>
+                            @endif
                     </div>
                 </div>
                 <div class="flex items-center gap-[10px] p-5 border border-[#F1F1F1] rounded-[20px] bg-white">
@@ -62,6 +66,14 @@
                         <p class="font-bold">{{$project->skill_level}}</p>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-[6px] w-full">
+            <h3 class="font-semibold">Locations</h3>
+            <div class="grid sm:grid-cols-4 gap-5">
+                <div class="flex flex-col justify-center gap-[2px]"> 
+                    <p class="text-sm text-[#545768]">{{$project->location}}</p>
+                </div>    
             </div>
         </div>
         <div class="flex flex-col gap-[6px] w-full">

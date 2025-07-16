@@ -2,74 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreApplicantRequest;
-use App\Models\Category;
 use App\Models\Project;
-use App\Models\ProjectApplicant;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use PDO;
 
 class FrontController extends Controller
 {
-    public function index(){
-        $categories = Category::all();
-        $projects = Project::orderByDesc('id')->get();
+    public function index(Request $request)
+    {
+        // Mulai query builder untuk Project
+        $projectsQuery = Project::query();
 
-        return view('front.index', compact('categories', 'projects'));
+        // Terapkan filter HANYA JIKA input diisi
+        $projectsQuery->when($request->filled('name'), function ($query) use ($request) {
+            return $query->where('name', 'like', '%' . $request->input('name') . '%');
+        });
+
+        $projectsQuery->when($request->filled('category_id'), function ($query) use ($request) {
+            return $query->where('category_id', $request->input('category_id'));
+        });
+
+        $projectsQuery->when($request->filled('job_type'), function ($query) use ($request) {
+            return $query->where('job_type', $request->input('job_type'));
+        });
+
+        $projectsQuery->when($request->filled('location_district'), function ($query) use ($request) {
+            return $query->where('location_district', 'like', '%' . $request->input('location_district') . '%');
+        });
+
+        // Eager load relasi untuk optimasi dan filter hanya yang belum selesai
+        $projects = $projectsQuery->with(['category', 'owner'])
+                                  ->where('has_finished', false)
+                                  ->orderByDesc('id')
+                                  ->paginate(8);
+
+        // Ambil semua kategori untuk dropdown filter
+        $categories = Category::orderBy('name')->get();
+
+        // Ambil semua jenis pekerjaan unik dari database untuk dropdown dinamis
+        $job_types = Project::whereNotNull('job_type')
+                            ->where('job_type', '!=', '')
+                            ->distinct()
+                            ->orderBy('job_type')
+                            ->pluck('job_type');
+
+        return view('front.index', compact('projects', 'categories', 'job_types'));
     }
 
-    public function category(Category $category){
-        return view('front.category', compact('category'));
-    }
-
-    public function details(Project $project){
-        $projects = Project::orderByDesc('id')->get();
+    public function details(Project $project)
+    {
+        $projects = Project::where('category_id', $project->category_id)
+            ->where('has_finished', false)
+            ->orderByDesc('id')
+            ->take(4)
+            ->get();
         return view('front.details', compact('project', 'projects'));
     }
 
-    public function apply_job(Project $project){
-        $user = Auth::user();
-
-        if($user->hasAppliedToProject($project->id)){
-            return redirect()->route('dashboard.proposals');
-        }
-
-        if($user->connect == 0){
-            return redirect()->route('front.out_of_connect');
-        }
-
-        if($project->has_started){
-            return redirect()->route('front.details', $project->slug);
-        }
+    public function apply(Project $project)
+    {
         return view('front.apply', compact('project'));
     }
 
-    public function apply_job_store(StoreApplicantRequest $request, Project $project){
-        $user = Auth::user();
-
-        if($user->hasAppliedToProject($project->id)){
-            return redirect()->route('dashboard.proposals');
-        }
-
-        if($user->connect == 0){
-            return redirect()->route('front.out_of_connect');
-        } else {
-            $user->decrement('connect', 1);
-        }
-
-        DB::transaction(function() use($request, $project, $user){
-
-            $validated = $request->validated();
-
-            $validated['project_id'] = $project->id;
-            $validated['freelancer_id'] = $user->id;
-            $validated['status'] = 'Waiting';
-
-            ProjectApplicant::create($validated);
-        });
-
-        return redirect()->route('front.details', $project->slug)->with('success', 'You have successfully applied for this job');
+    public function category(Category $category)
+    {
+        $projects = Project::where('category_id', $category->id)
+            ->where('has_finished', false)
+            ->orderByDesc('id')
+            ->paginate(8);
+            
+        return view('front.category', compact('projects', 'category'));
     }
 }

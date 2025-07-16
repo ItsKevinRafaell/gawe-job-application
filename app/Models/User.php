@@ -63,6 +63,14 @@ class User extends Authenticatable
         return $this->hasMany(ProjectApplicant::class, 'freelancer_id', 'id')->orderByDesc('id');
     }
 
+    public function isClient(){
+        return $this->hasRole('project_client');
+    }
+
+    public function isFreelancer(){
+        return $this->hasRole('project_freelancer');
+    }
+
     public function hasAppliedToProject($projectId){
         return ProjectApplicant::where('project_id', $projectId)
         ->where('freelancer_id', $this->id)
