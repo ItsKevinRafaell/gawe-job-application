@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users/{user}/verify', [UserController::class, 'verifyBusiness'])->name('users.verify');
+        Route::post('/users/{user}/toggle-feature', [UserController::class, 'toggleFeature'])->name('users.toggle-feature');
     });
 });
 

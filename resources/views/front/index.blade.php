@@ -2,56 +2,71 @@
 @section('content')
     <div class="font-poppins text-[#030303] bg-[#F6F5FA] pb-[100px] px-4 sm:px-0">
     <x-nav/>
-   <section id="header" class="container max-w-[1130px] mx-auto mt-[50px]">
-    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <section id="header" class="container max-w-[1130px] mx-auto mt-[50px]">
+    <div class="flex flex-col gap-8">
         <h1 class="font-extrabold text-[40px] leading-[45px] text-center sm:text-left">
             Temukan Peluang<br>
             Kerja di Balikpapan
         </h1>
 
-       <form action="{{ route('front.index') }}" method="GET" class="p-6 bg-white shadow rounded-lg">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">Filter Lowongan</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="md:col-span-2">
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lowongan</label>
-                        <input type="text" name="name" id="name" placeholder="Contoh: Jasa Desain Grafis" value="{{ request()->get('name') }}" class="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
-                    </div>
-                    <div>
-                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                        <select name="category_id" id="category_id" class="w-full py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
-                            <option value="">Semua Kategori</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ request()->get('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="job_type" class="block text-sm font-medium text-gray-700 mb-1">Jenis Pekerjaan</label>
-                        <select name="job_type" id="job_type" class="w-full py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
-                            <option value="">Semua Jenis</option>
-                            @foreach($job_types as $job_type)
-                                <option value="{{ $job_type }}" {{ request()->get('job_type') == $job_type ? 'selected' : '' }}>{{ $job_type }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="location_district" class="block text-sm font-medium text-gray-700 mb-1">Lokasi Kecamatan</label>
-                        <input type="text" name="location_district" id="location_district" placeholder="Contoh: Balikpapan Utara" value="{{ request()->get('location_district') }}" class="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
-                    </div>
-                    <div class="md:col-span-2 flex gap-3 items-end">
-                        <button type="submit" class="w-full font-bold bg-[#6635F1] text-white py-2 px-4 rounded-lg hover:bg-[#4314e8] transition-all duration-300">
-                            Cari
-                        </button>
-                        <a href="{{ route('front.index') }}" class="w-full text-center font-bold bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">
-                            Reset
-                        </a>
-                    </div>
+        <!-- FORM FILTER DENGAN STYLE TAILWIND LANGSUNG -->
+        <form action="{{ route('front.index') }}" method="GET" class="bg-[#fffff] rounded-2xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Filter Lowongan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <div class="md:col-span-2">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lowongan</label>
+                    <input type="text" name="name" id="name" placeholder="Contoh: Jasa Desain Grafis" value="{{ request()->get('name') }}" 
+                           class="w-full py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                   </div>
+
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                    <select name="category_id" id="category_id" 
+                            class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request()->get('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-            </form>
-        </div>
-    </section>
+
+                <div>
+                    <label for="job_type" class="block text-sm font-medium text-gray-700 mb-1">Jenis Pekerjaan</label>
+                    <select name="job_type" id="job_type" 
+                            class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                        <option value="">Semua Jenis</option>
+                        @foreach($job_types as $job_type)
+                            <option value="{{ $job_type }}" {{ request()->get('job_type') == $job_type ? 'selected' : '' }}>
+                                {{ $job_type }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="location_district" class="block text-sm font-medium text-gray-700 mb-1">Lokasi Kecamatan</label>
+                    <input type="text" name="location_district" id="location_district" placeholder="Contoh: Balikpapan Utara" value="{{ request()->get('location_district') }}" 
+                           class="w-full py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6635F1] transition">
+                </div>
+
+                <div class="md:col-span-2 flex gap-3 items-end">
+                    <button type="submit" 
+                            class="w-full font-bold bg-[#6635F1] text-white py-2 px-4 rounded-lg hover:bg-[#4314e8] transition-all duration-300">
+                        Cari
+                    </button>
+                    <a href="{{ route('front.index') }}" 
+                       class="w-full text-center font-bold bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
 
     <section id="categories" class="container max-w-[1130px] mx-auto flex flex-col gap-4 mt-[50px]">
         <h2 class="font-bold text-xl">Browse Categories</h2>
@@ -74,6 +89,35 @@
             @endforelse
         </div>
     </section>
+
+    @if($featured_clients->isNotEmpty())
+    <section id="featured-clients" class="bg-[#F6F5FA] py-12 rounded-[20px] mt-[50px]">
+        <div class="container max-w-[1130px] mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2">
+                <h2 class="font-bold text-xl text-[#030303]">Sorotan UKM Lokal</h2>
+                <a href="#" class="font-semibold text-sm text-[#6635F1] hover:underline">Lihat Semua</a>
+            </div>
+            <!-- Horizontal Scroll Container -->
+            <div class="flex gap-6 overflow-x-auto pb-2">
+                @foreach ($featured_clients as $client)
+                <a href="" class="card">
+                <div class="p-5 rounded-[20px] bg-white flex flex-col gap-[30px] hover:ring-2 hover:ring-[#6635F1] transition-all duration-300">
+                    <div class="w-full sm:w-[150px] h-[100px] flex shrink-0 rounded-[20px] overflow-hidden bg-[#D9D9D9]">
+                        <img src="{{Storage::url($client->avatar)}}" class="w-full h-full object-cover ro" alt="thumbnail">
+
+                    </div>
+                   <div class="flex flex-col text-center gap-1">
+                        <p class="font-bold text-base text-[#030303] truncate" title="{{ $client->name }}">{{ $client->name }}</p>
+                        <p class="text-sm text-[#545768] truncate" title="{{ $client->occupation }}">{{ $client->occupation }}</p>
+                    </div>
+                </div>
+            </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     <section id="featured" class="container max-w-[1130px] mx-auto flex flex-col gap-4 mt-[50px]">
         <h2 class="font-bold text-xl">Featured Projects</h2>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-5">

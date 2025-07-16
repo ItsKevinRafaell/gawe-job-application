@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -46,7 +47,14 @@ class FrontController extends Controller
                             ->orderBy('job_type')
                             ->pluck('job_type');
 
-        return view('front.index', compact('projects', 'categories', 'job_types'));
+        $featured_clients = User::role('project_client')
+        ->where('is_verified_local_business', true)
+        ->where('is_featured', true)
+        ->orderBy('name')
+        ->take(6) // Ambil maksimal 6 klien untuk ditampilkan
+        ->get();
+
+        return view('front.index', compact('projects', 'categories', 'job_types', 'featured_clients'));
     }
 
     public function details(Project $project)

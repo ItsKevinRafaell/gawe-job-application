@@ -34,4 +34,21 @@ class UserController extends Controller
         // Redirect kembali ke halaman daftar pengguna dengan pesan sukses
         return redirect()->route('admin.users.index')->with('success', 'Bisnis berhasil diverifikasi!');
     }
+
+     /**
+         * Method baru untuk menyematkan atau melepas sorotan dari user.
+         */
+        public function toggleFeature(User $user)
+        {
+            if (!auth()->user()->hasRole('super_admin')) {
+                abort(403, 'ANDA TIDAK MEMILIKI AKSES');
+            }
+
+            // Toggle nilai boolean dari is_featured
+            $user->update(['is_featured' => !$user->is_featured]);
+
+            $message = $user->is_featured ? 'Bisnis berhasil disorot!' : 'Sorotan bisnis berhasil dilepas!';
+
+            return redirect()->route('admin.users.index')->with('success', $message);
+        }
 }

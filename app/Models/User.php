@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'avatar',
         'occupation',
+        'is_featured',
         'is_verified_local_business', // <-- TAMBAHKAN INI
         'connect',
         'password',
